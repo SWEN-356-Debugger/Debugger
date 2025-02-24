@@ -5,10 +5,12 @@ import { InlineDiagnostic } from "./extension/InlineDiagnostic";
 
 export function activate(context: vscode.ExtensionContext) {
 	initSettings();
-
+	let caller: OpenAICaller = new OpenAICaller();
 	const callAI = vscode.commands.registerCommand("debuggingAiAssistant.callAI", () => {
-		let caller: OpenAICaller = new OpenAICaller();
-		caller.sendRequest({ prompt: "Why is print(123) not working in my file, test.js?" }).then(response => {
+		
+		context.asAbsolutePath("test.ts")
+	 
+		caller.sendRequest({ prompt: "What is wrong with the my file: test.js" , fileStructure: [vscode.workspace.workspaceFolders![0].uri.fsPath.toString() + "\\test.js"]}).then(response => {
 			vscode.window.showInformationMessage(`Response: ${response.text}`);
 		});
 	});
